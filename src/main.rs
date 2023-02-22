@@ -29,7 +29,11 @@ fn main() {
                 Some(b'e') => false,
                 Some(b'd') => true,
                 Some(b'q') => break,
-                _ => continue,
+                _ => {
+                    stdout.write_all(b"> ").unwrap();
+                    stdout.flush().unwrap();
+                    continue;
+                }
             };
             if d {
                 it = base94::decode(&it[1..]);
@@ -71,20 +75,26 @@ fn hash(passkey: String) -> ([u32; 8], [u32; 3]) {
     res[0..4].copy_from_slice(&K);
     res[0..4].copy_from_slice(&K);
 
-    for _ in 0..10 {
+    for _ in 0..100 {
         inner_block(&mut res);
     }
 
+    //dbg!(res.iter().map(|i| i.count_ones() as f64).sum::<f64>() / (32. * 16.));
+
     for c in passkey.as_bytes().chunks(4) {
-        let mut b = 0;
         for i in 0..4 {
-            b = b << 8 | c[i % c.len()] as u32;
-        }
-        res[b as usize % 16] ^= b;
-        for _ in 0..10 {
-            inner_block(&mut res);
+            let b = c[i % c.len()] as u32;
+            let b = b << 24 | b << 16 | b << 8 | b;
+            res[i] ^= b;
+            for _ in 0..10 {
+                inner_block(&mut res);
+            }
         }
     }
+
+    let score =
+        (res.iter().map(|i| i.count_ones() as f64).sum::<f64>() / (32. * 16.) - 0.5).abs() * 2.;
+    dbg!(score);
 
     (res[..8].try_into().unwrap(), res[13..].try_into().unwrap())
 }
