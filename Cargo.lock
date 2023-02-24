@@ -5,7 +5,7 @@ version = 3
 [[package]]
 name = "base94"
 version = "0.1.0"
-source = "git+https://github.com/pro465/base94#82ecfb3f6902b9185cc4bfd1a3c7f0525659c91e"
+source = "git+https://github.com/pro465/base94#a65f5c437970629c8f341f0ea7ed2c38cd9510b5"
 
 [[package]]
 name = "enc"
