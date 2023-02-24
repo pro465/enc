@@ -36,13 +36,13 @@ fn main() {
                 }
             };
             if d {
-                it = base94::decode(&it[1..]);
+                it = base94::decode(&it[1..], base94::BASE94);
             } else {
                 it.remove(0);
             }
             State::new(k, n).chacha20(it.into_iter(), &mut v);
             if !d {
-                v = base94::encode(&v);
+                v = base94::encode(&v, base94::BASE94);
             }
             stdout.write_all(&v).unwrap();
             stdout.write_all(b"\n> ").unwrap();
