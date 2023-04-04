@@ -36,11 +36,11 @@ fn main() {
                 }
             };
 
+            it.remove(0);
+
             if d {
                 let b = std::mem::take(&mut it).into_iter();
                 base94::decode(b, &mut it, base94::BASE94).unwrap();
-            } else {
-                it.remove(0);
             }
 
             State::new(k, n).chacha20(it.into_iter(), &mut v);
@@ -83,8 +83,6 @@ fn hash(passkey: String) -> ([u32; 8], [u32; 3]) {
     for _ in 0..100 {
         inner_block(&mut res);
     }
-
-    //dbg!(res.iter().map(|i| i.count_ones() as f64).sum::<f64>() / (32. * 16.));
 
     for c in passkey.as_bytes().chunks(4) {
         for i in 0..4 {
